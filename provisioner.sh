@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 #
 # Ruby environment provisioner for Vagrant
 #
@@ -9,13 +9,15 @@
 
 SYSTEM_LOCALE=en_US.utf8
 SYSTEM_TIMEZONE=Asia/Tokyo
-RUBY_VERSION=2.3.0
-DB_USER=app
-DB_PASS=app
 
 # CentOS 7 official box uses rsync folder for $HOME/sync
-SYNC_DIR=/home/vagrant/sync
-PROVISIONER_DIR=${SYNC_DIR}/provisioner
+export SYNC_DIR=/home/vagrant/sync
+export PROVISIONER_DIR=${SYNC_DIR}/provisioner
+
+# Applications (See provisioner/*.sh)
+export PROV_RUBY_VERSION=2.3.1
+export PROV_DB_USER=app
+export PROV_DB_PASS=app
 
 
 #--------------------------------------
@@ -55,30 +57,33 @@ systemctl disable firewalld
 # Applications
 #--------------------------------------
 
+# Workaround for permissions on Windows host
+chmod u+x "${PROVISIONER_DIR}"/*.sh
+
 # postgresql
-. "$PROVISIONER_DIR/postgresql.sh"
+"$PROVISIONER_DIR/postgresql.sh"
 
 # mongodb
-. "$PROVISIONER_DIR/mongodb.sh"
+"$PROVISIONER_DIR/mongodb.sh"
 
 # redis
-. "$PROVISIONER_DIR/redis.sh"
+"$PROVISIONER_DIR/redis.sh"
 
 # nginx
-. "$PROVISIONER_DIR/nginx.sh"
+"$PROVISIONER_DIR/nginx.sh"
 
 # omnibus-chef
-# . "$PROVISIONER_DIR/omnibus-chef.sh"
+# "$PROVISIONER_DIR/omnibus-chef.sh"
 
 # rbenv
-. "$PROVISIONER_DIR/rbenv.sh"
+"$PROVISIONER_DIR/rbenv.sh"
 
 # ruby
-. "$PROVISIONER_DIR/ruby.sh"
+"$PROVISIONER_DIR/ruby.sh"
 
 # nodejs
 # (required for Rails execjs)
-. "$PROVISIONER_DIR/nodejs.sh"
+"$PROVISIONER_DIR/nodejs.sh"
 
 
 #--------------------------------------
@@ -86,13 +91,13 @@ systemctl disable firewalld
 #--------------------------------------
 
 # tig (latest version instead of epel version)
-. "$PROVISIONER_DIR/tig.sh"
+"$PROVISIONER_DIR/tig.sh"
 
 # tmux
-. "$PROVISIONER_DIR/tmux.sh"
+"$PROVISIONER_DIR/tmux.sh"
 
 # direnv
-. "$PROVISIONER_DIR/direnv.sh"
+"$PROVISIONER_DIR/direnv.sh"
 
 
 #--------------------------------------
@@ -102,7 +107,7 @@ systemctl disable firewalld
 if [[ -f "${SYNC_DIR}/user-provisioner.sh" ]]; then
     # /bin/sh "${SYNC_DIR}/user-provisioner.sh"
 
-    # Workaround for shebang
+    # Workaround for permissions and shebang
     chmod u+x "${SYNC_DIR}/user-provisioner.sh"
     "${SYNC_DIR}/user-provisioner.sh"
 fi
