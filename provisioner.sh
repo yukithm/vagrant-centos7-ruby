@@ -1,7 +1,9 @@
-#!/bin/sh -eu
+#!/bin/bash
 #
 # Ruby environment provisioner for Vagrant
 #
+
+set -eu
 
 #--------------------------------------
 # Configurations
