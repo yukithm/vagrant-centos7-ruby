@@ -14,7 +14,7 @@ yum -y install gcc gcc-c++ patch openssl-devel zlib-devel ncurses-devel readline
 
 cat <<'EOS' >/etc/profile.d/rbenv.sh
 export RBENV_ROOT=/usr/local/rbenv
-export PATH="$RBENV_ROOT/bin:$PATH"
+export PATH=$RBENV_ROOT/bin:$PATH
 eval "$(rbenv init -)"
 EOS
 . /etc/profile.d/rbenv.sh

@@ -20,7 +20,7 @@ fi
 # Add path
 if [[ -n "$PROV_OMNIBUS_CHEF_ADD_PATH" ]]; then
   cat <<'EOS' >/etc/profile.d/omnibus-chef.sh
-export PATH="/opt/chef/bin:/opt/chef/embedded/bin:$PATH"
+export PATH=/opt/chef/bin:/opt/chef/embedded/bin:$PATH
 EOS
 fi
 
