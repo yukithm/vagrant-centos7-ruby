@@ -42,6 +42,8 @@ yum -y update
 
 # chrony
 yum -y install chrony
+cp /etc/chrony.conf{,.orig}
+sed -i -e "/^makestep/c\\makestep 1 -1" /etc/chrony.conf
 systemctl enable chronyd
 systemctl start chronyd
 
