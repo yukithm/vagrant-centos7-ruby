@@ -75,6 +75,7 @@ include=virtual-guest
 transparent_hugepages=never
 EOS
 tuned-adm profile no-thp
+service disable-transparent-hugepages start
 
 # Change ulimit settings
 # See: https://docs.mongodb.org/manual/reference/ulimit/
