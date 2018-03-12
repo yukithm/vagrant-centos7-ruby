@@ -17,7 +17,7 @@ export SYNC_DIR=/home/vagrant/sync
 export PROVISIONER_DIR=${SYNC_DIR}/provisioner
 
 # Applications (See provisioner/*.sh)
-export PROV_RUBY_VERSION=2.3.1
+export PROV_RUBY_VERSION=2.5.0
 export PROV_DB_USER=app
 export PROV_DB_PASS=app
 
