@@ -3,17 +3,21 @@
 # tmux
 #
 # Environment Variables:
-#   PROV_TMUX_VERSION: tmux version (e.g. "2.1")
+#   PROV_TMUX_VERSION: tmux version (e.g. "2.6")
 #   PROV_TMUX_WITHOUT_PATCHES: without CJK patches if not empty
 #   PROV_TMUX_PATCH_HASH: CJK patch hash of the git
 #--------------------------------------
 
-: ${PROV_TMUX_VERSION:=${1:-2.1}}
+: ${PROV_TMUX_VERSION:=${1:-2.6}}
 : ${PROV_TMUX_WITHOUT_PATCHES:=}
 : ${PROV_TMUX_PATCH_HASH:=}
 
 if [[ -z "$PROV_TMUX_PATCH_HASH" ]]; then
     case "${PROV_TMUX_VERSION}" in
+        2.6*) PROV_TMUX_PATCH_HASH=4db1513 ;;
+        2.4*) PROV_TMUX_PATCH_HASH=fadd325 ;;
+        2.3*) PROV_TMUX_PATCH_HASH=6c8f54e ;;
+        2.2*) PROV_TMUX_PATCH_HASH=e2c3b43 ;;
         2.1*) PROV_TMUX_PATCH_HASH=695586f ;;
         2.0*) PROV_TMUX_PATCH_HASH=f1b8fba ;;
         1.9*) PROV_TMUX_PATCH_HASH=6f1aa27 ;;
@@ -34,9 +38,12 @@ if [[ -n "$PROV_TMUX_WITHOUT_PATCHES" ]]; then
 else
     git clone https://gist.github.com/1399751.git /opt/src/tmux-patches
     (cd /opt/src/tmux-patches && git checkout "$PROV_TMUX_PATCH_HASH")
+    (cd /opt/src/tmux && ./autogen.sh)
+
+    if [[ -f /opt/src/tmux-patches/tmux-ambiguous-width-cjk.patch ]]; then
+      (cd /opt/src/tmux && patch -p1 </opt/src/tmux-patches/tmux-ambiguous-width-cjk.patch)
+    fi
     (cd /opt/src/tmux && \
-        ./autogen.sh && \
-        patch -p1 </opt/src/tmux-patches/tmux-ambiguous-width-cjk.patch && \
         patch -p1 </opt/src/tmux-patches/tmux-do-not-combine-utf8.patch && \
         patch -p1 </opt/src/tmux-patches/tmux-pane-border-ascii.patch && \
         ./configure --prefix=/usr/local && \
